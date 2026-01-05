@@ -1,0 +1,2280 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SB Sports Co</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        overflow: hidden;
+    }
+
+    header {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2em;
+        margin-bottom: 0;
+    }
+
+    .sync-status {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 8px 15px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 20px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .sync-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #4caf50;
+        animation: pulse 2s infinite;
+    }
+
+    .sync-dot.offline {
+        background: #ff9800;
+        animation: none;
+    }
+
+    .sync-dot.error {
+        background: #f44336;
+        animation: none;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .firebase-setup {
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px;
+        display: none;
+    }
+
+    .firebase-setup.show {
+        display: block;
+    }
+
+    .firebase-setup h3 {
+        color: #856404;
+        margin-bottom: 15px;
+    }
+
+    .firebase-setup input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 2px solid #ffc107;
+        border-radius: 6px;
+    }
+
+    .tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        overflow-x: auto;
+    }
+
+    .tab {
+        padding: 15px 25px;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        font-size: 16px;
+        color: #495057;
+        transition: all 0.3s;
+        white-space: nowrap;
+    }
+
+    .tab:hover {
+        background: #e9ecef;
+    }
+
+    .tab.active {
+        background: white;
+        color: #ff6b35;
+        font-weight: 600;
+        border-bottom: 3px solid #ff6b35;
+    }
+
+    .tab-content {
+        display: none;
+        padding: 30px;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #ff6b35;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c82333;
+    }
+
+    .btn-success {
+        background: #28a745;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #218838;
+    }
+
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .card-item {
+        background: white;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        transition: all 0.3s;
+        position: relative;
+    }
+
+    .card-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .card-status {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-inventory {
+        background: #cce5ff;
+        color: #004085;
+    }
+
+    .status-listed {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-grading {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-sold {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .card-item h3 {
+        color: #ff6b35;
+        margin-bottom: 10px;
+        padding-right: 80px;
+    }
+
+    .card-detail {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #495057;
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    }
+
+    .card-actions button {
+        flex: 1;
+        min-width: 80px;
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .filter-section {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .filter-section select, .filter-section input {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 2.5em;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.9em;
+        opacity: 0.9;
+    }
+
+    .mode-selector {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .mode-btn {
+        padding: 15px 30px;
+        margin: 0 10px;
+        border: 2px solid #ff6b35;
+        background: white;
+        color: #ff6b35;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .mode-btn.active {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: white;
+    }
+
+    .mode-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .form-section {
+        display: none;
+    }
+
+    .form-section.active {
+        display: block;
+    }
+
+    .bulk-input {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .checkbox-item {
+        padding: 10px;
+        border: 2px solid #dee2e6;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .checkbox-item:hover {
+        background: #f8f9fa;
+    }
+
+    .checkbox-item.selected {
+        background: #fff3e0;
+        border-color: #ff6b35;
+    }
+
+    .search-box {
+        margin-bottom: 20px;
+    }
+
+    .fee-section {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            border-radius: 0;
+        }
+
+        header {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 1.5em;
+        }
+
+        .sync-status {
+            position: static;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .tab {
+            padding: 12px 15px;
+            font-size: 14px;
+        }
+
+        .tab-content {
+            padding: 15px;
+        }
+
+        .card-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-section {
+            flex-direction: column;
+        }
+
+        .filter-section select, .filter-section input {
+            width: 100%;
+        }
+
+        .mode-btn {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏆 SB Sports Co</h1>
+            <div class="sync-status" id="sync-status">
+                <div class="sync-dot offline" id="sync-dot"></div>
+                <span id="sync-text">Local Mode</span>
+            </div>
+        </header>
+
+```
+    <div class="firebase-setup" id="firebase-setup">
+        <h3>🔥 Enable Cloud Sync (Optional)</h3>
+        <p style="margin-bottom: 15px;">Enter your Firebase credentials to sync data across all devices. Leave empty to use local storage only.</p>
+        <input type="text" id="fb-api-key" placeholder="API Key" value="AIzaSyBkAHH-m3__HxAeqJj_qYsGK4xe7ZHUhS8">
+        <input type="text" id="fb-auth-domain" placeholder="Auth Domain (yourapp.firebaseapp.com)" value="sb-sports-cards.firebaseapp.com">
+        <input type="text" id="fb-project-id" placeholder="Project ID" value="sb-sports-cards">
+        <input type="text" id="fb-storage-bucket" placeholder="Storage Bucket (yourapp.appspot.com)" value="sb-sports-cards.firebasestorage.app">
+        <input type="text" id="fb-messaging-sender-id" placeholder="Messaging Sender ID" value="662250964894">
+        <input type="text" id="fb-app-id" placeholder="App ID" value="1:662250964894:web:f4bd0b7c21220d69f1788f">
+        <button class="btn btn-primary" onclick="saveFirebaseConfig(); return false;">Save & Connect</button>
+        <button class="btn btn-secondary" onclick="hideFirebaseSetup(); return false;">Use Local Storage Only</button>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('dashboard', this)">Dashboard</button>
+        <button class="tab" onclick="switchTab('analytics', this)">Analytics</button>
+        <button class="tab" onclick="switchTab('add-card', this)">Add Card</button>
+        <button class="tab" onclick="switchTab('sell-card', this)">Sell Card</button>
+        <button class="tab" onclick="switchTab('inventory', this)">Inventory</button>
+        <button class="tab" onclick="switchTab('settings', this)">Settings</button>
+    </div>
+
+    <div id="dashboard" class="tab-content active">
+        <h2>Dashboard</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="stat-inventory">0</div>
+                <div class="stat-label">In Inventory</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-listed">0</div>
+                <div class="stat-label">Listed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-grading">0</div>
+                <div class="stat-label">Grading</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-sold">0</div>
+                <div class="stat-label">Sold</div>
+            </div>
+        </div>
+        <div>
+            <h3>Recent Activity</h3>
+            <div id="recent-cards" class="card-grid"></div>
+        </div>
+    </div>
+
+    <div id="analytics" class="tab-content">
+        <h2>Analytics & Financial Reports</h2>
+        
+        <div class="filter-section" style="margin-bottom: 30px;">
+            <select id="analytics-timeframe" onchange="updateAnalytics()">
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+                <option value="quarter">This Quarter</option>
+                <option value="year">This Year</option>
+                <option value="custom">Custom Range</option>
+            </select>
+            <input type="date" id="custom-start-date" style="display: none;" onchange="updateAnalytics()">
+            <input type="date" id="custom-end-date" style="display: none;" onchange="updateAnalytics()">
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                <div class="stat-value" id="total-revenue">$0</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);">
+                <div class="stat-value" id="total-expenses">$0</div>
+                <div class="stat-label">Total Expenses</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="stat-value" id="net-profit">$0</div>
+                <div class="stat-label">Net Profit</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="stat-value" id="roi-percentage">0%</div>
+                <div class="stat-label">ROI</div>
+            </div>
+        </div>
+
+        <div style="background: white; padding: 25px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #dee2e6;">
+            <h3 style="margin-bottom: 20px;">Detailed Breakdown</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div>
+                    <h4 style="color: #ff6b35; margin-bottom: 10px;">Sales Metrics</h4>
+                    <div class="card-detail">Total Sales: <strong id="total-sales-count">0</strong></div>
+                    <div class="card-detail">Average Sale Price: <strong id="avg-sale-price">$0</strong></div>
+                    <div class="card-detail">Highest Sale: <strong id="highest-sale">$0</strong></div>
+                    <div class="card-detail">Lowest Sale: <strong id="lowest-sale">$0</strong></div>
+                </div>
+                <div>
+                    <h4 style="color: #ff6b35; margin-bottom: 10px;">Inventory Value</h4>
+                    <div class="card-detail">Current Inventory: <strong id="current-inventory-count">0</strong></div>
+                    <div class="card-detail">Total Invested: <strong id="total-invested">$0</strong></div>
+                    <div class="card-detail">Potential Revenue: <strong id="potential-revenue">$0</strong></div>
+                    <div class="card-detail">Estimated Profit: <strong id="estimated-profit">$0</strong></div>
+                </div>
+                <div>
+                    <h4 style="color: #ff6b35; margin-bottom: 10px;">Listed Value</h4>
+                    <div class="card-detail">Cards Listed: <strong id="cards-listed-count">0</strong></div>
+                    <div class="card-detail">Total Invested: <strong id="listed-invested">$0</strong></div>
+                    <div class="card-detail">Potential Revenue: <strong id="listed-potential-revenue">$0</strong></div>
+                    <div class="card-detail">Estimated Profit: <strong id="listed-estimated-profit">$0</strong></div>
+                </div>
+                <div>
+                    <h4 style="color: #ff6b35; margin-bottom: 10px;">Performance</h4>
+                    <div class="card-detail">Cards in Grading: <strong id="cards-grading-count">0</strong></div>
+                    <div class="card-detail">Sell-Through Rate: <strong id="sell-through-rate">0%</strong></div>
+                    <div class="card-detail">Avg Days to Sale: <strong id="avg-days-to-sale">-</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: white; padding: 25px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #dee2e6;">
+            <h3 style="margin-bottom: 20px;">💰 Tax Information</h3>
+            <p style="color: #6c757d; margin-bottom: 15px;">Use this information for tax preparation. Consult with a tax professional for accurate filing.</p>
+            
+            <div class="form-group">
+                <label for="tax-year">Tax Year</label>
+                <select id="tax-year" onchange="updateTaxInfo()">
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+                <div>
+                    <h4 style="color: #ff6b35; margin-bottom: 10px;">Income</h4>
+                    <div class="card-detail">Gross Sales: <strong id="tax-gross-sales">$0</strong></div>
+                    <div class="card-detail">Number of Transactions: <strong id="tax-transactions">0</strong></div>
+                </div>
+                <div>
+                    <h4 style="color: #ff6b35; margin-bottom: 10px;">Expenses</h4>
+                    <div class="card-detail">Cost of Goods Sold: <strong id="tax-cogs">$0</strong></div>
+                    <div class="card-detail">Total Business Expenses: <strong id="tax-expenses">$0</strong></div>
+                </div>
+                <div>
+                    <h4 style="color: #ff6b35; margin-bottom: 10px;">Net Income</h4>
+                    <div class="card-detail">Taxable Income: <strong id="tax-net-income">$0</strong></div>
+                    <div class="card-detail" style="color: #28a745; font-size: 16px;">Profit Margin: <strong id="tax-profit-margin">0%</strong></div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 6px; border-left: 4px solid #ffc107;">
+                <strong>⚠️ Tax Reminder:</strong> Keep all receipts and documentation. This is for informational purposes only and should not be considered tax advice.
+            </div>
+
+            <button class="btn btn-primary" onclick="exportTaxReport()" style="margin-top: 15px;">Export Tax Report</button>
+        </div>
+
+        <div style="background: white; padding: 25px; border-radius: 8px; border: 2px solid #dee2e6;">
+            <h3 style="margin-bottom: 20px;">Top Performers</h3>
+            <div id="top-performers"></div>
+        </div>
+    </div>
+
+    <div id="add-card" class="tab-content">
+        <h2>Add Card</h2>
+        
+        <div class="mode-selector">
+            <button class="mode-btn active" onclick="setAddMode('single', this)">Add Single Card</button>
+            <button class="mode-btn" onclick="setAddMode('bulk', this)">Add Bulk Lot</button>
+        </div>
+
+        <div id="single-mode" class="form-section active">
+            <form id="single-card-form">
+                <div class="form-group">
+                    <label for="card-name">Card Name *</label>
+                    <input type="text" id="card-name" required placeholder="e.g., 2023 Panini Prizm Justin Herbert #15 PSA 10">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="card-grade">Grade / Raw *</label>
+                        <input type="text" id="card-grade" required placeholder="e.g., PSA 10, BGS 9.5, Raw">
+                    </div>
+                    <div class="form-group">
+                        <label for="card-purchase-price">Purchase Price *</label>
+                        <input type="number" id="card-purchase-price" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="card-purchased-from">Purchased From</label>
+                        <input type="text" id="card-purchased-from" placeholder="e.g., eBay, Local Shop">
+                    </div>
+                    <div class="form-group">
+                        <label for="card-purchase-date">Purchase Date</label>
+                        <input type="date" id="card-purchase-date">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="card-grading-fee">Grading Fee</label>
+                        <input type="number" id="card-grading-fee" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="card-list-price">List Price</label>
+                        <input type="number" id="card-list-price" step="0.01">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="card-date-listed">Date Listed</label>
+                        <input type="date" id="card-date-listed">
+                    </div>
+                    <div class="form-group">
+                        <label for="card-status">Status *</label>
+                        <select id="card-status" required>
+                            <option value="inventory">Inventory</option>
+                            <option value="listed">Listed</option>
+                            <option value="grading">Grading</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="card-notes">Notes</label>
+                    <textarea id="card-notes" placeholder="Additional notes about the card"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Card</button>
+            </form>
+        </div>
+
+        <div id="bulk-mode" class="form-section">
+            <div class="bulk-input">
+                <div class="form-group">
+                    <label for="lot-name">Lot Name *</label>
+                    <input type="text" id="lot-name" placeholder="e.g., Estate Sale Lot #123">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="lot-purchase-price">Total Purchase Price *</label>
+                        <input type="number" id="lot-purchase-price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lot-purchased-from">Purchased From</label>
+                        <input type="text" id="lot-purchased-from" placeholder="e.g., Estate Sale, Auction">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lot-purchase-date">Purchase Date</label>
+                    <input type="date" id="lot-purchase-date">
+                </div>
+                <div class="form-group">
+                    <label for="lot-description">Lot Description</label>
+                    <textarea id="lot-description" placeholder="General description of the lot"></textarea>
+                </div>
+            </div>
+
+            <h3>Add Cards to This Lot</h3>
+            <p>Enter each card's information and click "Add to Lot". When finished, click "Save Entire Lot".</p>
+            
+            <form id="bulk-card-form">
+                <div class="form-group">
+                    <label for="bulk-card-name">Card Name *</label>
+                    <input type="text" id="bulk-card-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="bulk-card-grade">Grade / Raw *</label>
+                    <input type="text" id="bulk-card-grade" required placeholder="e.g., PSA 10, BGS 9.5, Raw">
+                </div>
+                <div class="form-group">
+                    <label for="bulk-card-notes">Notes</label>
+                    <textarea id="bulk-card-notes"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add to Lot</button>
+            </form>
+
+            <div id="lot-cards-preview" style="margin-top: 30px;">
+                <h3>Cards in Current Lot: <span id="lot-count">0</span></h3>
+                <div id="lot-cards-list"></div>
+                <button onclick="saveEntireLot()" class="btn btn-success" id="save-lot-btn" style="display: none;">Save Entire Lot</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="sell-card" class="tab-content">
+        <h2>Sell Card</h2>
+        
+        <div class="mode-selector">
+            <button class="mode-btn active" onclick="setSellMode('single', this)">Sell Single Card</button>
+            <button class="mode-btn" onclick="setSellMode('lot', this)">Sell as Lot</button>
+        </div>
+
+        <div id="sell-single-mode" class="form-section active">
+            <h3>Select Card to Sell</h3>
+            <div class="search-box">
+                <input type="text" id="sell-single-search" placeholder="Search cards..." onkeyup="filterSingleSellCards()">
+            </div>
+            <div class="filter-section">
+                <select id="sell-single-filter" onchange="filterSingleSellCards()">
+                    <option value="">All Statuses</option>
+                    <option value="inventory">Inventory</option>
+                    <option value="listed">Listed</option>
+                    <option value="grading">Grading</option>
+                </select>
+            </div>
+            <div id="sell-single-container"></div>
+        </div>
+
+        <div id="sell-lot-mode" class="form-section">
+            <h3>Select Cards for Lot Sale</h3>
+            <div class="search-box">
+                <input type="text" id="lot-search-input" placeholder="Search cards..." onkeyup="filterLotCards()">
+            </div>
+            <div class="filter-section">
+                <select id="lot-filter-status" onchange="filterLotCards()">
+                    <option value="">All Statuses</option>
+                    <option value="inventory">Inventory</option>
+                    <option value="listed">Listed</option>
+                    <option value="grading">Grading</option>
+                </select>
+            </div>
+            <div id="lot-selection-container"></div>
+            <div style="margin-top: 20px;">
+                <h3>Selected Cards: <span id="selected-count">0</span></h3>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <div class="card-detail">Total Purchase Cost: <strong id="lot-total-cost">$0</strong></div>
+                </div>
+                <div class="form-group">
+                    <label for="lot-sale-price">Lot Sale Price *</label>
+                    <input type="number" id="lot-sale-price" step="0.01" placeholder="Enter total price for lot" onchange="calculateLotProfit()">
+                </div>
+                <div class="form-group">
+                    <label for="lot-sold-date">Sale Date *</label>
+                    <input type="date" id="lot-sold-date">
+                </div>
+                <div class="form-group">
+                    <label for="lot-sold-location">Sold On/At</label>
+                    <input type="text" id="lot-sold-location" placeholder="e.g., eBay, Card Show, COMC">
+                </div>
+                <div class="fee-section">
+                    <h4 style="margin-bottom: 10px;">Fees</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="lot-sales-tax">Sales Tax</label>
+                            <input type="number" id="lot-sales-tax" step="0.01" placeholder="0.00" onchange="calculateLotProfit()">
+                        </div>
+                        <div class="form-group">
+                            <label for="lot-shipping-fee">Shipping Fee</label>
+                            <input type="number" id="lot-shipping-fee" step="0.01" placeholder="0.00" onchange="calculateLotProfit()">
+                        </div>
+                        <div class="form-group">
+                            <label for="lot-sale-fee">Sale Fee</label>
+                            <input type="number" id="lot-sale-fee" step="0.01" placeholder="0.00" onchange="calculateLotProfit()">
+                        </div>
+                    </div>
+                </div>
+                <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ff6b35;">
+                    <div class="card-detail">Net Sale Amount: <strong id="lot-net-sale">$0</strong></div>
+                    <div class="card-detail">Total Profit: <strong id="lot-profit" style="color: #28a745;">$0</strong></div>
+                    <div class="card-detail">ROI: <strong id="lot-roi" style="color: #28a745;">0%</strong></div>
+                </div>
+                <button class="btn btn-success" onclick="completeLotSale()">Complete Lot Sale</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="inventory" class="tab-content">
+        <h2>All Cards</h2>
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search by name..." onkeyup="filterCards()">
+        </div>
+        <div class="filter-section">
+            <select id="filter-status" onchange="filterCards()">
+                <option value="">All Statuses</option>
+                <option value="inventory">Inventory</option>
+                <option value="listed">Listed</option>
+                <option value="grading">Grading</option>
+                <option value="sold">Sold</option>
+            </select>
+            <select id="filter-grade" onchange="filterCards()">
+                <option value="">All Grades</option>
+                <option value="PSA 10">PSA 10</option>
+                <option value="PSA 9">PSA 9</option>
+                <option value="BGS 9.5">BGS 9.5</option>
+                <option value="Raw">Raw</option>
+            </select>
+            <button class="btn btn-secondary" onclick="exportData()">Export Data</button>
+        </div>
+        <div id="cards-container" class="card-grid"></div>
+    </div>
+
+    <div id="settings" class="tab-content">
+        <h2>Settings</h2>
+        
+        <div style="background: white; padding: 25px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #dee2e6;">
+            <h3 style="margin-bottom: 20px;">🔥 Firebase Cloud Sync</h3>
+            <div id="firebase-status-display"></div>
+            <button class="btn btn-primary" onclick="showFirebaseSetup()">Configure Firebase</button>
+            <button class="btn btn-secondary" onclick="disconnectFirebase()">Disconnect Firebase</button>
+        </div>
+
+        <div style="background: white; padding: 25px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #dee2e6;">
+            <h3 style="margin-bottom: 20px;">💾 Data Management</h3>
+            <button class="btn btn-secondary" onclick="exportData()">Export All Data (JSON)</button>
+            <button class="btn btn-secondary" onclick="importData()">Import Data (JSON)</button>
+            <input type="file" id="import-file" accept=".json" style="display: none;" onchange="handleImport()">
+            <button class="btn btn-success" onclick="syncNow()">Force Sync Now</button>
+            <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+        </div>
+
+        <div style="background: white; padding: 25px; border-radius: 8px; border: 2px solid #dee2e6;">
+            <h3 style="margin-bottom: 20px;">ℹ️ About</h3>
+            <p><strong>Version:</strong> 1.0.0</p>
+            <p><strong>Storage:</strong> <span id="storage-mode">Local Storage</span></p>
+            <p><strong>Total Cards:</strong> <span id="total-cards-count">0</span></p>
+            <p style="margin-top: 15px; color: #6c757d;">Built for SB Sports Co. Data is stored locally in your browser and optionally synced to Firebase cloud.</p>
+        </div>
+    </div>
+</div>
+
+<div id="edit-modal" class="modal">
+    <div class="modal-content">
+        <h2>Edit Card</h2>
+        <form id="edit-form">
+            <input type="hidden" id="edit-id">
+            <div class="form-group">
+                <label for="edit-name">Card Name *</label>
+                <input type="text" id="edit-name" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-grade">Grade / Raw *</label>
+                    <input type="text" id="edit-grade" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-purchase-price">Purchase Price *</label>
+                    <input type="number" id="edit-purchase-price" step="0.01" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-purchased-from">Purchased From</label>
+                    <input type="text" id="edit-purchased-from">
+                </div>
+                <div class="form-group">
+                    <label for="edit-purchase-date">Purchase Date</label>
+                    <input type="date" id="edit-purchase-date">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-grading-fee">Grading Fee</label>
+                    <input type="number" id="edit-grading-fee" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="edit-list-price">List Price</label>
+                    <input type="number" id="edit-list-price" step="0.01">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-date-listed">Date Listed</label>
+                    <input type="date" id="edit-date-listed">
+                </div>
+                <div class="form-group">
+                    <label for="edit-status">Status *</label>
+                    <select id="edit-status" required>
+                        <option value="inventory">Inventory</option>
+                        <option value="listed">Listed</option>
+                        <option value="grading">Grading</option>
+                        <option value="sold">Sold</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="edit-notes">Notes</label>
+                <textarea id="edit-notes"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<div id="sell-single-modal" class="modal">
+    <div class="modal-content">
+        <h2>Sell Card</h2>
+        <form id="sell-single-form">
+            <input type="hidden" id="sell-card-id">
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <h3 style="color: #ff6b35; margin-bottom: 10px;" id="sell-card-display-name"></h3>
+                <div class="card-detail">Grade: <strong id="sell-card-display-grade"></strong></div>
+                <div class="card-detail">Purchase Price: <strong id="sell-card-display-purchase">$0</strong></div>
+                <div class="card-detail">Grading Fee: <strong id="sell-card-display-grading">$0</strong></div>
+                <div class="card-detail">Total Cost: <strong id="sell-card-display-total-cost">$0</strong></div>
+            </div>
+            <div class="form-group">
+                <label for="sell-single-price">Sale Price *</label>
+                <input type="number" id="sell-single-price" step="0.01" required onchange="calculateSingleProfit()">
+            </div>
+            <div class="form-group">
+                <label for="sell-single-date">Sale Date *</label>
+                <input type="date" id="sell-single-date" required>
+            </div>
+            <div class="form-group">
+                <label for="sell-single-location">Sold On/At</label>
+                <input type="text" id="sell-single-location" placeholder="e.g., eBay, Card Show, COMC">
+            </div>
+            <div class="fee-section">
+                <h4 style="margin-bottom: 10px;">Fees</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sell-single-sales-tax">Sales Tax</label>
+                        <input type="number" id="sell-single-sales-tax" step="0.01" placeholder="0.00" onchange="calculateSingleProfit()">
+                    </div>
+                    <div class="form-group">
+                        <label for="sell-single-shipping-fee">Shipping Fee</label>
+                        <input type="number" id="sell-single-shipping-fee" step="0.01" placeholder="0.00" onchange="calculateSingleProfit()">
+                    </div>
+                    <div class="form-group">
+                        <label for="sell-single-sale-fee">Sale Fee</label>
+                        <input type="number" id="sell-single-sale-fee" step="0.01" placeholder="0.00" onchange="calculateSingleProfit()">
+                    </div>
+                </div>
+            </div>
+            <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ff6b35;">
+                <div class="card-detail">Net Sale Amount: <strong id="single-net-sale">$0</strong></div>
+                <div class="card-detail">Total Profit: <strong id="single-profit" style="color: #28a745;">$0</strong></div>
+                <div class="card-detail">ROI: <strong id="single-roi" style="color: #28a745;">0%</strong></div>
+            </div>
+            <button type="submit" class="btn btn-success">Complete Sale</button>
+            <button type="button" class="btn btn-secondary" onclick="closeSellSingleModal()">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+    let cards = [];
+    let currentLot = [];
+    let selectedForLot = [];
+    let db = null;
+    let isFirebaseConnected = false;
+    let syncInterval = null;
+    let firebaseLoaded = false;
+
+    // Wait for Firebase to load
+    function waitForFirebase() {
+        return new Promise((resolve) => {
+            if (typeof firebase !== 'undefined') {
+                firebaseLoaded = true;
+                resolve(true);
+            } else {
+                setTimeout(() => {
+                    waitForFirebase().then(resolve);
+                }, 100);
+            }
+        });
+    }
+
+    async function init() {
+        loadData();
+        
+        // Wait for Firebase to load before checking config
+        await waitForFirebase();
+        
+        checkFirebaseConfig();
+        updateDashboard();
+        displayCards();
+        displayRecentCards();
+        displaySingleSellCards();
+        displayLotSelectionCards();
+        updateSettingsInfo();
+        
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('card-purchase-date').value = today;
+        document.getElementById('lot-purchase-date').value = today;
+        document.getElementById('lot-sold-date').value = today;
+        document.getElementById('sell-single-date').value = today;
+
+        // Auto-sync every 30 seconds if Firebase is connected
+        syncInterval = setInterval(() => {
+            if (isFirebaseConnected) {
+                syncToFirebase();
+            }
+        }, 30000);
+    }
+
+    function checkFirebaseConfig() {
+        if (!firebaseLoaded) {
+            console.log('Firebase not loaded yet');
+            document.getElementById('firebase-setup').classList.add('show');
+            updateSyncStatus('offline', 'Not Connected');
+            return;
+        }
+
+        const config = localStorage.getItem('firebaseConfig');
+        if (config) {
+            try {
+                const fbConfig = JSON.parse(config);
+                initializeFirebase(fbConfig);
+            } catch (e) {
+                console.error('Firebase config error:', e);
+                updateSyncStatus('error', 'Config Error');
+            }
+        } else {
+            document.getElementById('firebase-setup').classList.add('show');
+            updateSyncStatus('offline', 'Not Connected');
+        }
+    }
+
+    function initializeFirebase(config) {
+        if (!firebaseLoaded) {
+            updateSyncStatus('error', 'Firebase Not Loaded');
+            return;
+        }
+
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(config);
+            }
+            db = firebase.firestore();
+            isFirebaseConnected = true;
+            updateSyncStatus('synced', 'Cloud Synced');
+            syncFromFirebase();
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+            updateSyncStatus('error', 'Connection Error');
+            isFirebaseConnected = false;
+        }
+    }
+
+    async function saveFirebaseConfig() {
+        if (!firebaseLoaded) {
+            alert('Firebase is still loading. Please wait a moment and try again.');
+            return;
+        }
+
+        const config = {
+            apiKey: document.getElementById('fb-api-key').value,
+            authDomain: document.getElementById('fb-auth-domain').value,
+            projectId: document.getElementById('fb-project-id').value,
+            storageBucket: document.getElementById('fb-storage-bucket').value,
+            messagingSenderId: document.getElementById('fb-messaging-sender-id').value,
+            appId: document.getElementById('fb-app-id').value
+        };
+
+        if (!config.apiKey || !config.projectId) {
+            alert('Please enter at least API Key and Project ID');
+            return;
+        }
+
+        localStorage.setItem('firebaseConfig', JSON.stringify(config));
+        document.getElementById('firebase-setup').classList.remove('show');
+        initializeFirebase(config);
+        alert('Firebase connected! Your data will now sync across all devices.');
+    }
+
+    function hideFirebaseSetup() {
+        document.getElementById('firebase-setup').classList.remove('show');
+        updateSyncStatus('offline', 'Local Only');
+    }
+
+    function showFirebaseSetup() {
+        const config = localStorage.getItem('firebaseConfig');
+        if (config) {
+            try {
+                const fbConfig = JSON.parse(config);
+                document.getElementById('fb-api-key').value = fbConfig.apiKey || '';
+                document.getElementById('fb-auth-domain').value = fbConfig.authDomain || '';
+                document.getElementById('fb-project-id').value = fbConfig.projectId || '';
+                document.getElementById('fb-storage-bucket').value = fbConfig.storageBucket || '';
+                document.getElementById('fb-messaging-sender-id').value = fbConfig.messagingSenderId || '';
+                document.getElementById('fb-app-id').value = fbConfig.appId || '';
+            } catch (e) {
+                console.error('Error loading config:', e);
+            }
+        }
+        document.getElementById('firebase-setup').classList.add('show');
+    }
+
+    function disconnectFirebase() {
+        if (confirm('Disconnect from Firebase? Your data will remain stored locally.')) {
+            localStorage.removeItem('firebaseConfig');
+            isFirebaseConnected = false;
+            db = null;
+            updateSyncStatus('offline', 'Local Only');
+            alert('Disconnected from Firebase. Using local storage only.');
+            updateSettingsInfo();
+        }
+    }
+
+    function updateSyncStatus(status, text) {
+        const dot = document.getElementById('sync-dot');
+        const statusText = document.getElementById('sync-text');
+        
+        dot.className = 'sync-dot';
+        if (status === 'offline') {
+            dot.classList.add('offline');
+        } else if (status === 'error') {
+            dot.classList.add('error');
+        }
+        
+        statusText.textContent = text;
+    }
+
+    async function syncToFirebase() {
+        if (!isFirebaseConnected || !db) return;
+
+        try {
+            updateSyncStatus('synced', 'Syncing...');
+            const batch = db.batch();
+            
+            cards.forEach(card => {
+                const docRef = db.collection('cards').doc(String(card.id));
+                batch.set(docRef, card, { merge: true });
+            });
+
+            await batch.commit();
+            updateSyncStatus('synced', 'Cloud Synced');
+        } catch (error) {
+            console.error('Sync error:', error);
+            updateSyncStatus('error', 'Sync Failed');
+        }
+    }
+
+    async function syncFromFirebase() {
+        if (!isFirebaseConnected || !db) return;
+
+        try {
+            updateSyncStatus('synced', 'Loading...');
+            const snapshot = await db.collection('cards').get();
+            
+            if (!snapshot.empty) {
+                const cloudCards = [];
+                snapshot.forEach(doc => {
+                    cloudCards.push(doc.data());
+                });
+
+                // Merge cloud data with local data (cloud takes precedence for conflicts)
+                const localCardIds = cards.map(c => c.id);
+                const cloudCardIds = cloudCards.map(c => c.id);
+
+                // Add new cloud cards not in local
+                cloudCards.forEach(cloudCard => {
+                    if (!localCardIds.includes(cloudCard.id)) {
+                        cards.push(cloudCard);
+                    } else {
+                        // Update existing cards with cloud data
+                        const index = cards.findIndex(c => c.id === cloudCard.id);
+                        if (index !== -1) {
+                            cards[index] = cloudCard;
+                        }
+                    }
+                });
+
+                saveData();
+                updateDashboard();
+                displayCards();
+                displayRecentCards();
+            }
+            
+            updateSyncStatus('synced', 'Cloud Synced');
+        } catch (error) {
+            console.error('Load error:', error);
+            updateSyncStatus('error', 'Load Failed');
+        }
+    }
+
+    function syncNow() {
+        if (!isFirebaseConnected) {
+            alert('Firebase is not connected. Please configure Firebase in Settings.');
+            return;
+        }
+        syncToFirebase();
+    }
+
+    function loadData() {
+        const stored = localStorage.getItem('cardInventory');
+        if (stored) {
+            cards = JSON.parse(stored);
+        }
+    }
+
+    function saveData() {
+        localStorage.setItem('cardInventory', JSON.stringify(cards));
+        
+        // Auto-sync to Firebase if connected
+        if (isFirebaseConnected) {
+            syncToFirebase();
+        }
+    }
+
+    function switchTab(tabName, clickedElement) {
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => tab.classList.remove('active'));
+        contents.forEach(content => content.classList.remove('active'));
+        
+        if (clickedElement) {
+            clickedElement.classList.add('active');
+        }
+        document.getElementById(tabName).classList.add('active');
+
+        if (tabName === 'dashboard') {
+            updateDashboard();
+            displayRecentCards();
+        } else if (tabName === 'inventory') {
+            displayCards();
+        } else if (tabName === 'sell-card') {
+            displaySingleSellCards();
+            displayLotSelectionCards();
+        } else if (tabName === 'analytics') {
+            updateAnalytics();
+        } else if (tabName === 'settings') {
+            updateSettingsInfo();
+        }
+    }
+
+    function setAddMode(mode, clickedElement) {
+        const buttons = document.querySelectorAll('#add-card .mode-btn');
+        const sections = document.querySelectorAll('#add-card .form-section');
+        
+        buttons.forEach(btn => btn.classList.remove('active'));
+        sections.forEach(section => section.classList.remove('active'));
+        
+        if (clickedElement) {
+            clickedElement.classList.add('active');
+        }
+        document.getElementById(mode + '-mode').classList.add('active');
+    }
+
+    function setSellMode(mode, clickedElement) {
+        const buttons = document.querySelectorAll('#sell-card .mode-btn');
+        const sections = document.querySelectorAll('#sell-card .form-section');
+        
+        buttons.forEach(btn => btn.classList.remove('active'));
+        sections.forEach(section => section.classList.remove('active'));
+        
+        if (clickedElement) {
+            clickedElement.classList.add('active');
+        }
+        document.getElementById('sell-' + mode + '-mode').classList.add('active');
+        
+        if (mode === 'single') {
+            displaySingleSellCards();
+        } else {
+            displayLotSelectionCards();
+        }
+    }
+
+    document.getElementById('single-card-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const purchasePrice = parseFloat(document.getElementById('card-purchase-price').value);
+        const gradingFee = parseFloat(document.getElementById('card-grading-fee').value) || 0;
+        
+        const card = {
+            id: Date.now(),
+            name: document.getElementById('card-name').value,
+            grade: document.getElementById('card-grade').value,
+            purchasePrice: purchasePrice,
+            gradingFee: gradingFee,
+            totalCost: purchasePrice + gradingFee,
+            purchasedFrom: document.getElementById('card-purchased-from').value,
+            purchaseDate: document.getElementById('card-purchase-date').value,
+            listPrice: document.getElementById('card-list-price').value,
+            dateListed: document.getElementById('card-date-listed').value,
+            status: document.getElementById('card-status').value,
+            notes: document.getElementById('card-notes').value,
+            dateAdded: new Date().toISOString()
+        };
+
+        cards.push(card);
+        saveData();
+        
+        this.reset();
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('card-purchase-date').value = today;
+        alert('Card added successfully!');
+        updateDashboard();
+    });
+
+    document.getElementById('bulk-card-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const card = {
+            name: document.getElementById('bulk-card-name').value,
+            grade: document.getElementById('bulk-card-grade').value,
+            notes: document.getElementById('bulk-card-notes').value
+        };
+
+        currentLot.push(card);
+        this.reset();
+        
+        updateLotPreview();
+    });
+
+    function updateLotPreview() {
+        document.getElementById('lot-count').textContent = currentLot.length;
+        const container = document.getElementById('lot-cards-list');
+        
+        container.innerHTML = currentLot.map((card, index) => `
+            <div style="padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>${card.name}</strong> - ${card.grade}
+                </div>
+                <button onclick="removeFromLot(${index})" class="btn btn-danger" style="margin: 0; padding: 5px 10px; font-size: 12px;">Remove</button>
+            </div>
+        `).join('');
+
+        document.getElementById('save-lot-btn').style.display = currentLot.length > 0 ? 'block' : 'none';
+    }
+
+    function removeFromLot(index) {
+        currentLot.splice(index, 1);
+        updateLotPreview();
+    }
+
+    function saveEntireLot() {
+        if (currentLot.length === 0) {
+            alert('Please add at least one card to the lot.');
+            return;
+        }
+
+        const lotName = document.getElementById('lot-name').value;
+        const lotPurchasePrice = parseFloat(document.getElementById('lot-purchase-price').value);
+        const lotPurchasedFrom = document.getElementById('lot-purchased-from').value;
+        const lotPurchaseDate = document.getElementById('lot-purchase-date').value;
+        const lotDescription = document.getElementById('lot-description').value;
+
+        if (!lotName || !lotPurchasePrice) {
+            alert('Please enter lot name and purchase price.');
+            return;
+        }
+
+        const costPerCard = (lotPurchasePrice / currentLot.length).toFixed(2);
+        const now = new Date().toISOString();
+        
+        currentLot.forEach(card => {
+            cards.push({
+                id: Date.now() + Math.random(),
+                name: card.name,
+                grade: card.grade,
+                purchasePrice: parseFloat(costPerCard),
+                gradingFee: 0,
+                totalCost: parseFloat(costPerCard),
+                purchasedFrom: lotPurchasedFrom,
+                purchaseDate: lotPurchaseDate,
+                lotName: lotName,
+                lotDescription: lotDescription,
+                listPrice: '',
+                dateListed: '',
+                status: 'inventory',
+                notes: card.notes,
+                dateAdded: now
+            });
+        });
+
+        saveData();
+        
+        document.getElementById('lot-name').value = '';
+        document.getElementById('lot-purchase-price').value = '';
+        document.getElementById('lot-purchased-from').value = '';
+        document.getElementById('lot-description').value = '';
+        const lotCount = currentLot.length;
+        currentLot = [];
+        updateLotPreview();
+        
+        alert(`Lot saved successfully! ${lotCount} cards added to inventory.`);
+        updateDashboard();
+    }
+
+    function updateDashboard() {
+        const stats = {
+            inventory: 0,
+            listed: 0,
+            grading: 0,
+            sold: 0
+        };
+
+        cards.forEach(card => {
+            stats[card.status]++;
+        });
+
+        document.getElementById('stat-inventory').textContent = stats.inventory;
+        document.getElementById('stat-listed').textContent = stats.listed;
+        document.getElementById('stat-grading').textContent = stats.grading;
+        document.getElementById('stat-sold').textContent = stats.sold;
+    }
+
+    function displayRecentCards() {
+        const recent = cards.slice(-6).reverse();
+        const container = document.getElementById('recent-cards');
+        
+        if (recent.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #6c757d;">No cards yet. Add your first card to get started!</p>';
+            return;
+        }
+
+        container.innerHTML = recent.map(card => createCardHTML(card)).join('');
+    }
+
+    function displayCards() {
+        filterCards();
+    }
+
+    function filterCards() {
+        const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        const statusFilter = document.getElementById('filter-status').value;
+        const gradeFilter = document.getElementById('filter-grade').value;
+
+        let filtered = cards.filter(card => {
+            const matchesSearch = !searchTerm || 
+                card.name.toLowerCase().includes(searchTerm) ||
+                (card.notes && card.notes.toLowerCase().includes(searchTerm));
+            
+            const matchesStatus = !statusFilter || card.status === statusFilter;
+            const matchesGrade = !gradeFilter || card.grade === gradeFilter;
+
+            return matchesSearch && matchesStatus && matchesGrade;
+        });
+
+        const container = document.getElementById('cards-container');
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #6c757d;">No cards found matching your filters.</p>';
+            return;
+        }
+
+        container.innerHTML = filtered.map(card => createCardHTML(card)).join('');
+    }
+
+    function createCardHTML(card) {
+        const profit = card.soldPrice && card.totalCost ? 
+            (parseFloat(card.soldPrice) - parseFloat(card.totalCost)).toFixed(2) : null;
+        
+        return `
+            <div class="card-item">
+                <span class="card-status status-${card.status}">${card.status}</span>
+                <h3>${card.name}</h3>
+                <div class="card-detail"><strong>Grade:</strong> ${card.grade}</div>
+                ${card.purchasePrice ? `<div class="card-detail"><strong>Purchase:</strong> $${card.purchasePrice}</div>` : ''}
+                ${card.gradingFee ? `<div class="card-detail"><strong>Grading Fee:</strong> $${card.gradingFee}</div>` : ''}
+                ${card.totalCost ? `<div class="card-detail"><strong>Total Cost:</strong> $${card.totalCost.toFixed(2)}</div>` : ''}
+                ${card.purchasedFrom ? `<div class="card-detail"><strong>Purchased From:</strong> ${card.purchasedFrom}</div>` : ''}
+                ${card.purchaseDate ? `<div class="card-detail"><strong>Purchase Date:</strong> ${new Date(card.purchaseDate).toLocaleDateString()}</div>` : ''}
+                ${card.listPrice ? `<div class="card-detail"><strong>List Price:</strong> $${card.listPrice}</div>` : ''}
+                ${card.dateListed ? `<div class="card-detail"><strong>Date Listed:</strong> ${new Date(card.dateListed).toLocaleDateString()}</div>` : ''}
+                ${card.soldPrice ? `<div class="card-detail"><strong>Sold Price:</strong> $${card.soldPrice}</div>` : ''}
+                ${card.soldLocation ? `<div class="card-detail"><strong>Sold On:</strong> ${card.soldLocation}</div>` : ''}
+                ${profit ? `<div class="card-detail" style="color: ${profit >= 0 ? '#28a745' : '#dc3545'};"><strong>Profit:</strong> $${profit}</div>` : ''}
+                ${card.soldDate ? `<div class="card-detail"><strong>Sold Date:</strong> ${new Date(card.soldDate).toLocaleDateString()}</div>` : ''}
+                ${card.lotName ? `<div class="card-detail"><strong>Lot:</strong> ${card.lotName}</div>` : ''}
+                ${card.notes ? `<div class="card-detail"><strong>Notes:</strong> ${card.notes}</div>` : ''}
+                <div class="card-actions">
+                    <button class="btn btn-primary" onclick="editCard(${card.id})">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteCard(${card.id})">Delete</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function editCard(id) {
+        const card = cards.find(c => c.id === id);
+        if (!card) return;
+
+        document.getElementById('edit-id').value = card.id;
+        document.getElementById('edit-name').value = card.name;
+        document.getElementById('edit-grade').value = card.grade || '';
+        document.getElementById('edit-purchase-price').value = card.purchasePrice || '';
+        document.getElementById('edit-grading-fee').value = card.gradingFee || '';
+        document.getElementById('edit-purchased-from').value = card.purchasedFrom || '';
+        document.getElementById('edit-purchase-date').value = card.purchaseDate || '';
+        document.getElementById('edit-list-price').value = card.listPrice || '';
+        document.getElementById('edit-date-listed').value = card.dateListed || '';
+        document.getElementById('edit-status').value = card.status;
+        document.getElementById('edit-notes').value = card.notes || '';
+
+        document.getElementById('edit-modal').classList.add('active');
+    }
+
+    function closeEditModal() {
+        document.getElementById('edit-modal').classList.remove('active');
+    }
+
+    document.getElementById('edit-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const id = parseInt(document.getElementById('edit-id').value);
+        const cardIndex = cards.findIndex(c => c.id === id);
+        
+        if (cardIndex === -1) return;
+
+        const purchasePrice = parseFloat(document.getElementById('edit-purchase-price').value);
+        const gradingFee = parseFloat(document.getElementById('edit-grading-fee').value) || 0;
+
+        cards[cardIndex] = {
+            ...cards[cardIndex],
+            name: document.getElementById('edit-name').value,
+            grade: document.getElementById('edit-grade').value,
+            purchasePrice: purchasePrice,
+            gradingFee: gradingFee,
+            totalCost: purchasePrice + gradingFee,
+            purchasedFrom: document.getElementById('edit-purchased-from').value,
+            purchaseDate: document.getElementById('edit-purchase-date').value,
+            listPrice: document.getElementById('edit-list-price').value,
+            dateListed: document.getElementById('edit-date-listed').value,
+            status: document.getElementById('edit-status').value,
+            notes: document.getElementById('edit-notes').value
+        };
+
+        saveData();
+        closeEditModal();
+        displayCards();
+        updateDashboard();
+        alert('Card updated successfully!');
+    });
+
+    function deleteCard(id) {
+        if (!confirm('Are you sure you want to delete this card?')) return;
+        
+        cards = cards.filter(c => c.id !== id);
+        saveData();
+        displayCards();
+        updateDashboard();
+    }
+
+    function displaySingleSellCards() {
+        filterSingleSellCards();
+    }
+
+    function filterSingleSellCards() {
+        const searchTerm = document.getElementById('sell-single-search').value.toLowerCase();
+        const statusFilter = document.getElementById('sell-single-filter').value;
+
+        let filtered = cards.filter(card => {
+            const notSold = card.status !== 'sold';
+            
+            const matchesSearch = !searchTerm || 
+                card.name.toLowerCase().includes(searchTerm);
+            
+            const matchesStatus = !statusFilter || card.status === statusFilter;
+
+            return notSold && matchesSearch && matchesStatus;
+        });
+
+        const container = document.getElementById('sell-single-container');
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #6c757d;">No cards available to sell.</p>';
+            return;
+        }
+
+        container.innerHTML = filtered.map(card => `
+            <div style="padding: 15px; border: 2px solid #dee2e6; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <strong>${card.name}</strong><br>
+                    <span style="font-size: 14px; color: #6c757d;">Grade: ${card.grade} | Cost: $${card.totalCost.toFixed(2)}</span>
+                    <span class="card-status status-${card.status}" style="position: static; margin-left: 10px;">${card.status}</span>
+                </div>
+                <button class="btn btn-primary" onclick="openSellSingleModal(${card.id})" style="margin: 5px 0;">Sell Card</button>
+            </div>
+        `).join('');
+    }
+
+    function openSellSingleModal(id) {
+        const card = cards.find(c => c.id === id);
+        if (!card) return;
+
+        document.getElementById('sell-card-id').value = card.id;
+        document.getElementById('sell-card-display-name').textContent = card.name;
+        document.getElementById('sell-card-display-grade').textContent = card.grade;
+        document.getElementById('sell-card-display-purchase').textContent = '$' + card.purchasePrice.toFixed(2);
+        document.getElementById('sell-card-display-grading').textContent = '$' + (card.gradingFee || 0).toFixed(2);
+        document.getElementById('sell-card-display-total-cost').textContent = '$' + card.totalCost.toFixed(2);
+
+        document.getElementById('sell-single-price').value = '';
+        document.getElementById('sell-single-location').value = '';
+        document.getElementById('sell-single-sales-tax').value = '';
+        document.getElementById('sell-single-shipping-fee').value = '';
+        document.getElementById('sell-single-sale-fee').value = '';
+        
+        document.getElementById('single-net-sale').textContent = '$0';
+        document.getElementById('single-profit').textContent = '$0';
+        document.getElementById('single-roi').textContent = '0%';
+
+        document.getElementById('sell-single-modal').classList.add('active');
+    }
+
+    function closeSellSingleModal() {
+        document.getElementById('sell-single-modal').classList.remove('active');
+    }
+
+    function calculateSingleProfit() {
+        const salePrice = parseFloat(document.getElementById('sell-single-price').value) || 0;
+        const salesTax = parseFloat(document.getElementById('sell-single-sales-tax').value) || 0;
+        const shippingFee = parseFloat(document.getElementById('sell-single-shipping-fee').value) || 0;
+        const saleFee = parseFloat(document.getElementById('sell-single-sale-fee').value) || 0;
+        
+        const id = parseInt(document.getElementById('sell-card-id').value);
+        const card = cards.find(c => c.id === id);
+        if (!card) return;
+
+        const totalFees = salesTax + shippingFee + saleFee;
+        const netSale = salePrice - totalFees;
+        const profit = netSale - card.totalCost;
+        const roi = card.totalCost > 0 ? ((profit / card.totalCost) * 100) : 0;
+
+        document.getElementById('single-net-sale').textContent = '$' + netSale.toFixed(2);
+        document.getElementById('single-profit').textContent = '$' + profit.toFixed(2);
+        document.getElementById('single-profit').style.color = profit >= 0 ? '#28a745' : '#dc3545';
+        document.getElementById('single-roi').textContent = roi.toFixed(1) + '%';
+        document.getElementById('single-roi').style.color = roi >= 0 ? '#28a745' : '#dc3545';
+    }
+
+    document.getElementById('sell-single-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const id = parseInt(document.getElementById('sell-card-id').value);
+        const cardIndex = cards.findIndex(c => c.id === id);
+        
+        if (cardIndex === -1) return;
+
+        const salePrice = parseFloat(document.getElementById('sell-single-price').value);
+        const salesTax = parseFloat(document.getElementById('sell-single-sales-tax').value) || 0;
+        const shippingFee = parseFloat(document.getElementById('sell-single-shipping-fee').value) || 0;
+        const saleFee = parseFloat(document.getElementById('sell-single-sale-fee').value) || 0;
+
+        const totalFees = salesTax + shippingFee + saleFee;
+        const netSale = salePrice - totalFees;
+
+        cards[cardIndex].soldPrice = netSale;
+        cards[cardIndex].soldDate = document.getElementById('sell-single-date').value;
+        cards[cardIndex].soldLocation = document.getElementById('sell-single-location').value;
+        cards[cardIndex].salesTax = salesTax;
+        cards[cardIndex].shippingFee = shippingFee;
+        cards[cardIndex].saleFee = saleFee;
+        cards[cardIndex].status = 'sold';
+
+        saveData();
+        closeSellSingleModal();
+        displaySingleSellCards();
+        updateDashboard();
+        alert('Card marked as sold!');
+    });
+
+    function displayLotSelectionCards() {
+        filterLotCards();
+    }
+
+    function filterLotCards() {
+        const searchTerm = document.getElementById('lot-search-input').value.toLowerCase();
+        const statusFilter = document.getElementById('lot-filter-status').value;
+
+        let filtered = cards.filter(card => {
+            const notSold = card.status !== 'sold';
+            
+            const matchesSearch = !searchTerm || 
+                card.name.toLowerCase().includes(searchTerm);
+            
+            const matchesStatus = !statusFilter || card.status === statusFilter;
+
+            return notSold && matchesSearch && matchesStatus;
+        });
+
+        const container = document.getElementById('lot-selection-container');
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #6c757d;">No cards available for lot sale.</p>';
+            return;
+        }
+
+        container.innerHTML = filtered.map(card => `
+            <div class="checkbox-item ${selectedForLot.includes(card.id) ? 'selected' : ''}" onclick="toggleCardSelection(${card.id})">
+                <input type="checkbox" ${selectedForLot.includes(card.id) ? 'checked' : ''} onclick="event.stopPropagation(); toggleCardSelection(${card.id})">
+                <strong>${card.name}</strong> - ${card.grade}
+                <span class="card-status status-${card.status}" style="position: static; margin-left: 10px;">${card.status}</span>
+            </div>
+        `).join('');
+
+        updateLotTotals();
+    }
+
+    function toggleCardSelection(id) {
+        const index = selectedForLot.indexOf(id);
+        if (index > -1) {
+            selectedForLot.splice(index, 1);
+        } else {
+            selectedForLot.push(id);
+        }
+        displayLotSelectionCards();
+    }
+
+    function updateLotTotals() {
+        let totalCost = 0;
+        selectedForLot.forEach(id => {
+            const card = cards.find(c => c.id === id);
+            if (card) {
+                totalCost += card.totalCost || 0;
+            }
+        });
+
+        document.getElementById('selected-count').textContent = selectedForLot.length;
+        document.getElementById('lot-total-cost').textContent = '$' + totalCost.toFixed(2);
+    }
+
+    function calculateLotProfit() {
+        const salePrice = parseFloat(document.getElementById('lot-sale-price').value) || 0;
+        const salesTax = parseFloat(document.getElementById('lot-sales-tax').value) || 0;
+        const shippingFee = parseFloat(document.getElementById('lot-shipping-fee').value) || 0;
+        const saleFee = parseFloat(document.getElementById('lot-sale-fee').value) || 0;
+        
+        let totalCost = 0;
+        selectedForLot.forEach(id => {
+            const card = cards.find(c => c.id === id);
+            if (card) {
+                totalCost += card.totalCost || 0;
+            }
+        });
+
+        const totalFees = salesTax + shippingFee + saleFee;
+        const netSale = salePrice - totalFees;
+        const profit = netSale - totalCost;
+        const roi = totalCost > 0 ? ((profit / totalCost) * 100) : 0;
+
+        document.getElementById('lot-net-sale').textContent = '$' + netSale.toFixed(2);
+        document.getElementById('lot-profit').textContent = '$' + profit.toFixed(2);
+        document.getElementById('lot-profit').style.color = profit >= 0 ? '#28a745' : '#dc3545';
+        document.getElementById('lot-roi').textContent = roi.toFixed(1) + '%';
+        document.getElementById('lot-roi').style.color = roi >= 0 ? '#28a745' : '#dc3545';
+    }
+
+    function completeLotSale() {
+        if (selectedForLot.length === 0) {
+            alert('Please select at least one card for the lot sale.');
+            return;
+        }
+
+        const salePrice = document.getElementById('lot-sale-price').value;
+        const soldDate = document.getElementById('lot-sold-date').value;
+        
+        if (!salePrice || salePrice <= 0) {
+            alert('Please enter a valid lot sale price.');
+            return;
+        }
+
+        if (!soldDate) {
+            alert('Please enter a sale date.');
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to mark ${selectedForLot.length} card(s) as sold for $${salePrice}?`)) {
+            return;
+        }
+
+        const salesTax = parseFloat(document.getElementById('lot-sales-tax').value) || 0;
+        const shippingFee = parseFloat(document.getElementById('lot-shipping-fee').value) || 0;
+        const saleFee = parseFloat(document.getElementById('lot-sale-fee').value) || 0;
+        const soldLocation = document.getElementById('lot-sold-location').value;
+
+        const totalFees = salesTax + shippingFee + saleFee;
+        const netSale = parseFloat(salePrice) - totalFees;
+        const pricePerCard = (netSale / selectedForLot.length).toFixed(2);
+
+        selectedForLot.forEach(id => {
+            const card = cards.find(c => c.id === id);
+            if (card) {
+                card.status = 'sold';
+                card.soldAsLot = true;
+                card.soldPrice = parseFloat(pricePerCard);
+                card.soldDate = soldDate;
+                card.soldLocation = soldLocation;
+                card.salesTax = salesTax / selectedForLot.length;
+                card.shippingFee = shippingFee / selectedForLot.length;
+                card.saleFee = saleFee / selectedForLot.length;
+            }
+        });
+
+        saveData();
+        
+        alert(`Lot sale completed! ${selectedForLot.length} card(s) marked as sold.`);
+        
+        selectedForLot = [];
+        document.getElementById('lot-sale-price').value = '';
+        document.getElementById('lot-sold-location').value = '';
+        document.getElementById('lot-sales-tax').value = '';
+        document.getElementById('lot-shipping-fee').value = '';
+        document.getElementById('lot-sale-fee').value = '';
+        displayLotSelectionCards();
+        updateDashboard();
+    }
+
+    function exportData() {
+        const dataStr = JSON.stringify(cards, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `card-inventory-${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function importData() {
+        document.getElementById('import-file').click();
+    }
+
+    function handleImport() {
+        const file = document.getElementById('import-file').files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedCards = JSON.parse(e.target.result);
+                if (confirm(`Import ${importedCards.length} cards? This will merge with your existing data.`)) {
+                    cards = [...cards, ...importedCards];
+                    saveData();
+                    updateDashboard();
+                    displayCards();
+                    alert('Data imported successfully!');
+                }
+            } catch (error) {
+                alert('Error importing data. Please check the file format.');
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function clearAllData() {
+        if (!confirm('Are you sure you want to delete ALL cards? This cannot be undone!')) return;
+        if (!confirm('Really? This will permanently delete everything!')) return;
+        
+        cards = [];
+        saveData();
+        displayCards();
+        updateDashboard();
+        displayRecentCards();
+        alert('All data has been cleared.');
+    }
+
+    function updateSettingsInfo() {
+        document.getElementById('total-cards-count').textContent = cards.length;
+        document.getElementById('storage-mode').textContent = isFirebaseConnected ? 'Firebase Cloud + Local' : 'Local Storage Only';
+        
+        const statusDisplay = document.getElementById('firebase-status-display');
+        if (isFirebaseConnected) {
+            statusDisplay.innerHTML = '<p style="color: #28a745;">✓ Connected to Firebase Cloud</p>';
+        } else {
+            statusDisplay.innerHTML = '<p style="color: #ff9800;">⚠ Using Local Storage Only - Data won\'t sync across devices</p>';
+        }
+    }
+
+    function getDateRange(timeframe) {
+        const now = new Date();
+        let startDate = new Date(0);
+        let endDate = now;
+
+        if (timeframe === 'custom') {
+            const customStart = document.getElementById('custom-start-date').value;
+            const customEnd = document.getElementById('custom-end-date').value;
+            if (customStart) startDate = new Date(customStart);
+            if (customEnd) {
+                endDate = new Date(customEnd);
+                endDate.setHours(23, 59, 59, 999);
+            }
+            return { startDate, endDate };
+        }
+
+        switch(timeframe) {
+            case 'today':
+                startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                break;
+            case 'week':
+                startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                break;
+            case 'month':
+                startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                break;
+            case 'quarter':
+                const quarter = Math.floor(now.getMonth() / 3);
+                startDate = new Date(now.getFullYear(), quarter * 3, 1);
+                break;
+            case 'year':
+                startDate = new Date(now.getFullYear(), 0, 1);
+                break;
+        }
+
+        return { startDate, endDate };
+    }
+
+    function updateAnalytics() {
+        const timeframe = document.getElementById('analytics-timeframe').value;
+        const customDates = document.getElementById('custom-start-date');
+        const customDatee = document.getElementById('custom-end-date');
+        
+        if (timeframe === 'custom') {
+            customDates.style.display = 'block';
+            customDatee.style.display = 'block';
+        } else {
+            customDates.style.display = 'none';
+            customDatee.style.display = 'none';
+        }
+
+        const { startDate, endDate } = getDateRange(timeframe);
+
+        const filteredCards = cards.filter(card => {
+            if (!card.soldDate) return false;
+            const soldDate = new Date(card.soldDate);
+            return soldDate >= startDate && soldDate <= endDate;
+        });
+
+        let totalRevenue = 0;
+        let totalExpenses = 0;
+        const soldCards = [];
+
+        filteredCards.forEach(card => {
+            if (card.soldPrice) {
+                totalRevenue += parseFloat(card.soldPrice);
+                soldCards.push(card);
+            }
+            if (card.totalCost) {
+                totalExpenses += parseFloat(card.totalCost);
+            }
+        });
+
+        const netProfit = totalRevenue - totalExpenses;
+        const roi = totalExpenses > 0 ? ((netProfit / totalExpenses) * 100) : 0;
+
+        document.getElementById('total-revenue').textContent = '$' + totalRevenue.toFixed(2);
+        document.getElementById('total-expenses').textContent = '$' + totalExpenses.toFixed(2);
+        document.getElementById('net-profit').textContent = '$' + netProfit.toFixed(2);
+        document.getElementById('net-profit').style.color = netProfit >= 0 ? '#fff' : '#ff6b6b';
+        document.getElementById('roi-percentage').textContent = roi.toFixed(1) + '%';
+
+        document.getElementById('total-sales-count').textContent = soldCards.length;
+        
+        if (soldCards.length > 0) {
+            const avgSale = totalRevenue / soldCards.length;
+            const prices = soldCards.map(c => parseFloat(c.soldPrice)).filter(p => !isNaN(p));
+            const highestSale = Math.max(...prices);
+            const lowestSale = Math.min(...prices);
+
+            document.getElementById('avg-sale-price').textContent = '$' + avgSale.toFixed(2);
+            document.getElementById('highest-sale').textContent = '$' + highestSale.toFixed(2);
+            document.getElementById('lowest-sale').textContent = '$' + lowestSale.toFixed(2);
+
+            const daysToSale = soldCards.map(card => {
+                if (card.dateAdded && card.soldDate) {
+                    const added = new Date(card.dateAdded);
+                    const sold = new Date(card.soldDate);
+                    return Math.floor((sold - added) / (1000 * 60 * 60 * 24));
+                }
+                return null;
+            }).filter(d => d !== null);
+
+            if (daysToSale.length > 0) {
+                const avgDays = daysToSale.reduce((a, b) => a + b, 0) / daysToSale.length;
+                document.getElementById('avg-days-to-sale').textContent = Math.round(avgDays) + ' days';
+            } else {
+                document.getElementById('avg-days-to-sale').textContent = '-';
+            }
+        } else {
+            document.getElementById('avg-sale-price').textContent = '$0';
+            document.getElementById('highest-sale').textContent = '$0';
+            document.getElementById('lowest-sale').textContent = '$0';
+            document.getElementById('avg-days-to-sale').textContent = '-';
+        }
+
+        const inventoryCards = cards.filter(c => c.status === 'inventory');
+        const listedCards = cards.filter(c => c.status === 'listed');
+        const gradingCards = cards.filter(c => c.status === 'grading');
+
+        let totalInvested = 0;
+        let potentialRevenue = 0;
+
+        inventoryCards.forEach(card => {
+            if (card.totalCost) totalInvested += parseFloat(card.totalCost);
+            if (card.listPrice) potentialRevenue += parseFloat(card.listPrice);
+        });
+
+        const estimatedProfit = potentialRevenue - totalInvested;
+
+        document.getElementById('current-inventory-count').textContent = inventoryCards.length;
+        document.getElementById('total-invested').textContent = '$' + totalInvested.toFixed(2);
+        document.getElementById('potential-revenue').textContent = '$' + potentialRevenue.toFixed(2);
+        document.getElementById('estimated-profit').textContent = '$' + estimatedProfit.toFixed(2);
+
+        let listedInvested = 0;
+        let listedPotentialRevenue = 0;
+
+        listedCards.forEach(card => {
+            if (card.totalCost) listedInvested += parseFloat(card.totalCost);
+            if (card.listPrice) listedPotentialRevenue += parseFloat(card.listPrice);
+        });
+
+        const listedEstimatedProfit = listedPotentialRevenue - listedInvested;
+
+        document.getElementById('cards-listed-count').textContent = listedCards.length;
+        document.getElementById('listed-invested').textContent = '$' + listedInvested.toFixed(2);
+        document.getElementById('listed-potential-revenue').textContent = '$' + listedPotentialRevenue.toFixed(2);
+        document.getElementById('listed-estimated-profit').textContent = '$' + listedEstimatedProfit.toFixed(2);
+
+        document.getElementById('cards-grading-count').textContent = gradingCards.length;
+
+        const totalCards = cards.length;
+        const sellThroughRate = totalCards > 0 ? ((soldCards.length / totalCards) * 100) : 0;
+        document.getElementById('sell-through-rate').textContent = sellThroughRate.toFixed(1) + '%';
+
+        displayTopPerformers(soldCards);
+    }
+
+    function displayTopPerformers(soldCards) {
+        const cardsWithProfit = soldCards.filter(card => card.soldPrice && card.totalCost)
+            .map(card => ({
+                ...card,
+                profit: parseFloat(card.soldPrice) - parseFloat(card.totalCost),
+                roi: ((parseFloat(card.soldPrice) - parseFloat(card.totalCost)) / parseFloat(card.totalCost)) * 100
+            }))
+            .sort((a, b) => b.profit - a.profit)
+            .slice(0, 10);
+
+        const container = document.getElementById('top-performers');
+
+        if (cardsWithProfit.length === 0) {
+            container.innerHTML = '<p style="color: #6c757d; text-align: center;">No sales data available for this period.</p>';
+            return;
+        }
+
+        container.innerHTML = cardsWithProfit.map((card, index) => `
+            <div style="padding: 15px; border: 2px solid #dee2e6; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <strong>${index + 1}. ${card.name}</strong>
+                </div>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 12px; color: #6c757d;">Cost</div>
+                        <div style="font-weight: 600;">$${card.totalCost.toFixed(2)}</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 12px; color: #6c757d;">Sold</div>
+                        <div style="font-weight: 600;">$${card.soldPrice}</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 12px; color: #6c757d;">Profit</div>
+                        <div style="font-weight: 600; color: ${card.profit >= 0 ? '#28a745' : '#dc3545'};">$${card.profit.toFixed(2)}</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 12px; color: #6c757d;">ROI</div>
+                        <div style="font-weight: 600; color: ${card.roi >= 0 ? '#28a745' : '#dc3545'};">${card.roi.toFixed(1)}%</div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function updateTaxInfo() {
+        const taxYear = parseInt(document.getElementById('tax-year').value);
+        const startDate = new Date(taxYear, 0, 1);
+        const endDate = new Date(taxYear, 11, 31, 23, 59, 59);
+
+        const taxCards = cards.filter(card => {
+            if (!card.soldDate) return false;
+            const soldDate = new Date(card.soldDate);
+            return soldDate >= startDate && soldDate <= endDate;
+        });
+
+        let grossSales = 0;
+        let cogs = 0;
+
+        taxCards.forEach(card => {
+            if (card.soldPrice) grossSales += parseFloat(card.soldPrice);
+            if (card.totalCost) cogs += parseFloat(card.totalCost);
+        });
+
+        const netIncome = grossSales - cogs;
+        const profitMargin = grossSales > 0 ? ((netIncome / grossSales) * 100) : 0;
+
+        document.getElementById('tax-gross-sales').textContent = '$' + grossSales.toFixed(2);
+        document.getElementById('tax-transactions').textContent = taxCards.length;
+        document.getElementById('tax-cogs').textContent = '$' + cogs.toFixed(2);
+        document.getElementById('tax-expenses').textContent = '$' + cogs.toFixed(2);
+        document.getElementById('tax-net-income').textContent = '$' + netIncome.toFixed(2);
+        document.getElementById('tax-profit-margin').textContent = profitMargin.toFixed(1) + '%';
+    }
+
+    function exportTaxReport() {
+        const taxYear = parseInt(document.getElementById('tax-year').value);
+        const startDate = new Date(taxYear, 0, 1);
+        const endDate = new Date(taxYear, 11, 31, 23, 59, 59);
+
+        const taxCards = cards.filter(card => {
+            if (!card.soldDate) return false;
+            const soldDate = new Date(card.soldDate);
+            return soldDate >= startDate && soldDate <= endDate;
+        });
+
+        let grossSales = 0;
+        let cogs = 0;
+
+        taxCards.forEach(card => {
+            if (card.soldPrice) grossSales += parseFloat(card.soldPrice);
+            if (card.totalCost) cogs += parseFloat(card.totalCost);
+        });
+
+        const netIncome = grossSales - cogs;
+
+        const report = {
+            taxYear: taxYear,
+            summary: {
+                grossSales: grossSales.toFixed(2),
+                costOfGoodsSold: cogs.toFixed(2),
+                netIncome: netIncome.toFixed(2),
+                numberOfTransactions: taxCards.length
+            },
+            transactions: taxCards.map(card => ({
+                date: card.soldDate,
+                cardName: card.name,
+                grade: card.grade,
+                totalCost: card.totalCost ? card.totalCost.toFixed(2) : '0',
+                soldPrice: card.soldPrice || '0',
+                profit: card.soldPrice && card.totalCost ? 
+                    (parseFloat(card.soldPrice) - parseFloat(card.totalCost)).toFixed(2) : '0'
+            }))
+        };
+
+        const dataStr = JSON.stringify(report, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `tax-report-${taxYear}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+
+    window.onclick = function(event) {
+        const editModal = document.getElementById('edit-modal');
+        const sellModal = document.getElementById('sell-single-modal');
+        if (event.target === editModal) {
+            closeEditModal();
+        }
+        if (event.target === sellModal) {
+            closeSellSingleModal();
+        }
+    }
+
+    // Make sure functions are globally available
+    window.saveFirebaseConfig = saveFirebaseConfig;
+    window.hideFirebaseSetup = hideFirebaseSetup;
+    window.showFirebaseSetup = showFirebaseSetup;
+    window.disconnectFirebase = disconnectFirebase;
+    window.switchTab = switchTab;
+    window.setAddMode = setAddMode;
+    window.setSellMode = setSellMode;
+
+    // Start the app when page loads
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+</script>
+```
+
+</body>
+</html>
